@@ -5,6 +5,7 @@ cc.Class({
 
     init:function(initPos){
         this._super();
+        this.entityType = gameConst.ENTITY_TYPE.SUN;
         this.initPos = initPos;
         this.itemCount = 0;
 
@@ -22,12 +23,42 @@ cc.Class({
 
         this.sunParticle.getComponent("sunParticle").host = this;
 
-        this.moveType = Math.floor(Math.random() * 4);
+        this.moveType = 0;
         this.moveCount = 0;
         this.nowMoveInterval = battle.battleManager.mainMoveInterval;
 
-        console.log("create sun entity");
+        // console.log("create sun entity");
 
+    },
+
+    getFromPool:function(initPos){
+        this.baseFrame = 0;
+        this.isInPool = false;
+        this.initPos = initPos;
+        this.itemCount = 0;
+        this.moveType = battle.battleManager.getSunMoveType();
+        this.moveCount = 0;
+        this.nowMoveInterval = battle.battleManager.mainMoveInterval;
+        if(this.sunParticle && this.particleSystem){
+            this.sunParticle.x = this.initPos.x;
+            this.sunParticle.y = this.initPos.y;
+            this.sunParticle.active = true;
+            this.lastColor = new cc.Color(Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), 255);
+            this.particleSystem.startColor = this.lastColor;
+            this.particleSystem.endColor = this.lastColor;
+            this.particleSystem.resetSystem();
+        }
+        battle.entityManager.addEntity(this);
+    },
+
+    putInPool:function(){
+        this.baseFrame = 0;
+        this.isInPool = true;
+        if(this.particleSystem && this.sunParticle){
+            this.sunParticle.active = false;
+            this.particleSystem.stopSystem();
+        }
+        battle.entityManager.removeEntity(this);
     },
 
     getEntityX:function(){
@@ -39,12 +70,19 @@ cc.Class({
     },
 
     createBomb:function(){
-        var bomb = new sunBombEntity();
-        bomb.init(cc.p(this.getEntityX(), this.getEntityY()), this.lastColor);
-        this.clear();
+        var bomb = battle.poolManager.getFromPool(gameConst.ENTITY_TYPE.SUN_BOMB);
+        if(bomb){
+            bomb.getFromPool(cc.p(this.getEntityX(), this.getEntityY()), this.lastColor);
+        }else{
+            bomb = new sunBombEntity();
+            bomb.init(cc.p(this.getEntityX(), this.getEntityY()), this.lastColor);
+        }
+        battle.poolManager.putInPool(this);
     },
 
     step:function(){
+        if(this.isInPool)   return;
+        this._super();
         this.moveStep();
     },
 
@@ -75,7 +113,7 @@ cc.Class({
                 break;
             }
             if(this.sunParticle.y < -1280){
-                this.clear();
+                battle.poolManager.putInPool(this);
             }
         }
     },

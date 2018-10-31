@@ -1,5 +1,6 @@
 var starEntity = require("starEntity");
 var sunEntity = require("sunEntity");
+var sunBombEntity = require("sunBombEntity");
 cc.Class({
     init:function () {
         // console.log("---init battleManager---");
@@ -22,8 +23,33 @@ cc.Class({
 
         this.mainCount = 0;
         this.mainMoveInterval = 5;
+
+        this.allMoveType = [0, 0, 0, 1, 2, 3, 3];
+        this.nowMoveType = this.allMoveType.concat();
+
+        this.initEntity();
     },
 
+    initEntity:function(){
+        for(var i = 0; i < 20; i++){
+            var sun = new sunEntity();
+            sun.init(cc.p(-320 + 640 * Math.random(), 640));
+            battle.poolManager.putInPool(sun);
+
+            var bomb = new sunBombEntity();
+            bomb.init(sun.initPos, sun.lastColor);
+            battle.poolManager.putInPool(bomb);
+        }
+    },
+
+    getSunMoveType:function(){
+        if(this.nowMoveType.length == 0){
+            this.nowMoveType = this.allMoveType.concat();
+        }
+        var index = Math.floor(Math.random() * this.nowMoveType.length);
+        var moveType = this.nowMoveType.splice(index, 1);
+        return moveType[0];
+    },
 
     btnPress:function(event){
         if(event.getLocation()){
@@ -71,8 +97,13 @@ cc.Class({
     createSunStep:function(){
         this.createSunCount++;
         if(this.createSunCount % 90 == 0){
-            var sun = new sunEntity();
-            sun.init(cc.p(-320 + 640 * Math.random(), 640));
+            var sun = battle.poolManager.getFromPool(gameConst.ENTITY_TYPE.SUN);
+            if(sun){
+                sun.getFromPool(cc.p(-320 + 640 * Math.random(), 640));
+            }else{
+                sun = new sunEntity();
+                sun.init(cc.p(-320 + 640 * Math.random(), 640));
+            }
         }
     }
 })

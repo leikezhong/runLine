@@ -4,7 +4,7 @@ cc.Class({
 
     init:function(initPos, lastColor){
         this._super();
-
+        this.entityType = gameConst.ENTITY_TYPE.SUN_BOMB;
         this.sunBombParticle = cc.instantiate(cc.loader.getRes("prefabs/sun_bomb_particle"));
         this.sunBombParticle.parent = battle.layerManager.bgLayer;
 
@@ -15,7 +15,29 @@ cc.Class({
         this.particleSystem.startColor = lastColor;
         this.particleSystem.endColor = lastColor;
 
-        console.log("create sun bomb entity");
+        // console.log("create sun bomb entity");
+    },
+
+    getFromPool:function(initPos, lastColor){
+        this.baseFrame = 0;
+        this.isInPool = false;
+        if(this.sunBombParticle && this.particleSystem){
+            this.sunBombParticle.x = initPos.x;
+            this.sunBombParticle.y = initPos.y;
+            this.particleSystem.startColor = lastColor;
+            this.particleSystem.endColor = lastColor;
+            this.particleSystem.resetSystem();
+        }
+        battle.entityManager.addEntity(this);
+    },
+
+    putInPool:function(){
+        this.baseFrame = 0;
+        this.isInPool = true;
+        if(this.particleSystem){
+            this.particleSystem.stopSystem();
+        }
+        battle.entityManager.removeEntity(this);
     },
 
     getEntityX:function(){
@@ -26,12 +48,16 @@ cc.Class({
         return this.sunBombParticle.y;
     },
 
-    createBomb:function(){
-        this.clear();
+    step:function(){
+        if(this.isInPool)   return;
+        this._super();
+        this.frameStep();
     },
 
-    step:function(){
-        
+    frameStep:function(){
+        if(this.baseFrame > 300){
+            battle.poolManager.putInPool(this);
+        }
     },
 
     clear:function(){

@@ -21,6 +21,7 @@ cc.Class({
             "enterFrameManager",
             "entityManager",
             "layerManager",
+            "poolManager",
             "resourceManager",
             "wxManager"
         ];

@@ -13,10 +13,6 @@ cc.Class({
     },
 
     onLoad:function(){
-        setTimeout(() => {
-            cc.director.loadScene("rankingScene");
-        }, 10000);
-        return;
         battle.resourceManager.loadBaseResource(this.loadComplete.bind(this));
     },
 
@@ -28,7 +24,6 @@ cc.Class({
     },
 
     update:function(dt){
-        return;
         battle.battleManager.step();
         battle.entityManager.step();
     }
