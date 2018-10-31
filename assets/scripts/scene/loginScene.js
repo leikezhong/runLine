@@ -96,9 +96,13 @@ cc.Class({
         }
     },
 
+    startGame:function(){
+        cc.director.loadScene("battleScene");
+    },
+
     start () {
         cc.director.preloadScene("battleScene", function () {
-            cc.log("Next scene preloaded");
+            cc.log("rankingScene preloaded");
         });
     },
 

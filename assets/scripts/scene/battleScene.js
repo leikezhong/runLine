@@ -1,13 +1,3 @@
-// Learn cc.Class:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/class.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/class.html
-// Learn Attribute:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/reference/attributes.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/reference/attributes.html
-// Learn life-cycle callbacks:
-//  - [Chinese] http://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
-//  - [English] http://www.cocos2d-x.org/docs/creator/en/scripting/life-cycle-callbacks.html
-
 cc.Class({
     extends: cc.Component,
 
@@ -18,11 +8,15 @@ cc.Class({
 
     start:function(){
         cc.director.preloadScene("rankingScene", function () {
-            cc.log("Next scene preloaded");
+            cc.log("rankingScene preloaded");
         });
     },
 
     onLoad:function(){
+        setTimeout(() => {
+            cc.director.loadScene("rankingScene");
+        }, 10000);
+        return;
         battle.resourceManager.loadBaseResource(this.loadComplete.bind(this));
     },
 
@@ -33,8 +27,8 @@ cc.Class({
         battle.battleManager.initBattle();
     },
 
-
     update:function(dt){
+        return;
         battle.battleManager.step();
         battle.entityManager.step();
     }

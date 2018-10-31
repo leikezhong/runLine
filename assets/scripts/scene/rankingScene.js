@@ -21,8 +21,8 @@ cc.Class({
                 MAIN_MENU_NUM: "x1"
             });
         }
-        cc.director.preloadScene("mainScene", function () {
-            cc.log("Next scene preloaded");
+        cc.director.preloadScene("battleScene", function () {
+            cc.log("rankingScene preloaded");
         });
     },
     friendButtonFunc(event) {
@@ -72,19 +72,19 @@ cc.Class({
     submitScoreButtonFunc(){
         let score = 123;
         if (CC_WECHATGAME) {
-            console.log("提交得分: x2 : " + score);
+            console.log("提交得分: x1 : " + score);
             window.wx.postMessage({
                 messageType: 3,
                 MAIN_MENU_NUM: "x1",
                 score: score,
             });
         } else {
-            console.log("提交得分: x1 : " + score);
+            console.log("提交得分: x2 : " + score);
         }
     },
 
     quitButtonFunc(){
-        cc.director.loadScene("mainScene");
+        cc.director.loadScene("battleScene");
     },
 
     // 刷新子域的纹理
