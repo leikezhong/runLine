@@ -43,6 +43,7 @@ cc.Class({
     },
 
     getSunMoveType:function(){
+        
         if(this.nowMoveType.length == 0){
             this.nowMoveType = this.allMoveType.concat();
         }
