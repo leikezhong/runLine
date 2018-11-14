@@ -8,6 +8,7 @@ cc.Class({
         this.entityType = gameConst.ENTITY_TYPE.SUN;
         this.initPos = initPos;
         this.itemCount = 0;
+        this.radius = 0;
 
         this.sunParticle = cc.instantiate(cc.loader.getRes("prefabs/sun_particle"));
         battle.layerManager.enemyLayer.addChild(this.sunParticle);
@@ -15,7 +16,7 @@ cc.Class({
         this.sunParticle.x = initPos.x;
         this.sunParticle.y = initPos.y;
 
-        this.lastColor = new cc.Color(Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), 255);
+        this.lastColor = new cc.Color(Math.floor(battle.battleManager.getRandom() * 255), Math.floor(battle.battleManager.getRandom() * 255), Math.floor(battle.battleManager.getRandom() * 255), 255);
 
         this.particleSystem = this.sunParticle.getComponent(cc.ParticleSystem);
         this.particleSystem.startColor = this.lastColor;
@@ -38,6 +39,7 @@ cc.Class({
         this.itemCount = 0;
         this.moveType = battle.battleManager.getSunMoveType();
         this.moveCount = 0;
+        this.radius = 0;
         this.nowMoveInterval = battle.battleManager.mainMoveInterval;
         if(this.moveType == 3){
             if(this.initPos.x < -battle.battleManager.winSize.width * .5 + 150){
@@ -50,7 +52,7 @@ cc.Class({
             this.sunParticle.x = this.initPos.x;
             this.sunParticle.y = this.initPos.y;
             this.sunParticle.active = true;
-            this.lastColor = new cc.Color(Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), Math.floor(Math.random() * 255), 255);
+            this.lastColor = new cc.Color(Math.floor(battle.battleManager.getRandom() * 255), Math.floor(battle.battleManager.getRandom() * 255), Math.floor(battle.battleManager.getRandom() * 255), 255);
             this.particleSystem.startColor = this.lastColor;
             this.particleSystem.endColor = this.lastColor;
             this.particleSystem.resetSystem();
@@ -98,26 +100,49 @@ cc.Class({
         if(this.sunParticle){
             switch(this.moveType){
                 case 0:
-                this.sunParticle.y -= this.nowMoveInterval;
-                break;
+                    //直线向下
+                    this.sunParticle.y -= this.nowMoveInterval;
+                    break;
                 case 1:
-                this.itemCount++;
-                var hudu = (Math.PI / 180) * this.itemCount * 3;
-                this.sunParticle.x = this.initPos.x - Math.sin(hudu) * 200;
-                this.sunParticle.y = this.initPos.y - Math.cos(hudu) * 30 * this.nowMoveInterval - this.nowMoveInterval * this.moveCount * .09;
-                break;
+                    //顺时针
+                    this.itemCount++;
+                    this.radius = (Math.PI / 180) * this.itemCount * 3;
+                    this.sunParticle.x = this.initPos.x - Math.sin(this.radius) * 200;
+                    this.sunParticle.y = this.initPos.y - Math.cos(this.radius) * 30 * this.nowMoveInterval - this.nowMoveInterval * this.moveCount * .09;
+                    break;
                 case 2:
-                this.itemCount++;
-                var hudu = (Math.PI / 180) * this.itemCount * 3;
-                this.sunParticle.x = this.initPos.x + Math.sin(hudu) * 200;
-                this.sunParticle.y = this.initPos.y - Math.cos(hudu) * 30 * this.nowMoveInterval - this.nowMoveInterval * this.moveCount * .09;
-                break;
+                    //逆时针
+                    this.itemCount++;
+                    this.radius = (Math.PI / 180) * this.itemCount * 3;
+                    this.sunParticle.x = this.initPos.x + Math.sin(this.radius) * 200;
+                    this.sunParticle.y = this.initPos.y - Math.cos(this.radius) * 30 * this.nowMoveInterval - this.nowMoveInterval * this.moveCount * .09;
+                    break;
                 case 3:
-                this.itemCount++;
-                var hudu = (Math.PI / 180) * this.itemCount * 3;
-                this.sunParticle.x = this.initPos.x + Math.sin(hudu) * 150;
-                this.sunParticle.y = this.initPos.y - this.nowMoveInterval * this.moveCount * .8;
-                break;
+                    //曲线
+                    this.itemCount++;
+                    this.radius = (Math.PI / 180) * this.itemCount * 3;
+                    this.sunParticle.x = this.initPos.x + Math.sin(this.radius) * 150;
+                    this.sunParticle.y = this.initPos.y - this.nowMoveInterval * this.moveCount * .8;
+                    break;
+                case 4:
+                    //折线
+                    if(!this.moveDirect){
+                        this.moveDirect = battle.battleManager.getRandom()<0.5?-1:1;
+                    }
+                    this.sunParticle.x += this.moveDirect * this.nowMoveInterval * .6;
+                    this.sunParticle.y -= this.nowMoveInterval;
+                    if(this.sunParticle.x < -battle.battleManager.winSize.width * .5 + 10){
+                        this.moveDirect = -this.moveDirect;
+                        this.sunParticle.x = -battle.battleManager.winSize.width * .5 + 10;
+                    }else if(this.sunParticle.x > battle.battleManager.winSize.width * .5 - 10){
+                        this.moveDirect = -this.moveDirect;
+                        this.sunParticle.x = battle.battleManager.winSize.width * .5 - 10;
+                    }
+                    break;
+                case 5:
+                    //
+                    
+                    break;
             }
             if(this.sunParticle.y < -battle.battleManager.winSize.height * .6){
                 battle.poolManager.putInPool(this);

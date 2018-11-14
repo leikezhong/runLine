@@ -33,7 +33,7 @@ cc.Class({
         this.mainCount = 0;
         this.mainMoveInterval = 5;
 
-        this.allMoveType = [0, 0, 0, 3, 3];
+        this.allMoveType = [0, 0, 0, 0, 3, 3, 4, 4];
         this.nowMoveType = this.allMoveType.concat();
 
         this.initEntity();
@@ -46,7 +46,7 @@ cc.Class({
     initEntity:function(){
         for(var i = 0; i < 10; i++){
             var sun = new sunEntity();
-            sun.init(cc.p(-320 + 640 * Math.random(), 640));
+            sun.init(cc.p(-320 + 640 * this.getRandom(), 640));
             battle.poolManager.putInPool(sun);
 
             if(i < 5){
@@ -57,11 +57,15 @@ cc.Class({
         }
     },
 
+    getRandom:function(){
+        return Math.random();
+    },
+
     getSunMoveType:function(){
         if(this.nowMoveType.length == 0){
             this.nowMoveType = this.allMoveType.concat();
         }
-        var index = Math.floor(Math.random() * this.nowMoveType.length);
+        var index = Math.floor(this.getRandom() * this.nowMoveType.length);
         var moveType = this.nowMoveType.splice(index, 1);
         return moveType[0];
     },
@@ -169,10 +173,10 @@ cc.Class({
         if(this.createSunCount % this.createSunInterval == 0){
             var sun = battle.poolManager.getFromPool(gameConst.ENTITY_TYPE.SUN);
             if(sun){
-                sun.getFromPool(cc.p(-this.winSize.width * .4 + this.winSize.width * .8 * Math.random(), this.winSize.height * .5));
+                sun.getFromPool(cc.p(-this.winSize.width * .4 + this.winSize.width * .8 * this.getRandom(), this.winSize.height * .5));
             }else{
                 sun = new sunEntity();
-                sun.init(cc.p(-this.winSize.width * .4 + this.winSize.width * .8 * Math.random(), this.winSize.height * .5));
+                sun.init(cc.p(-this.winSize.width * .4 + this.winSize.width * .8 * this.getRandom(), this.winSize.height * .5));
             }
         }
     },
