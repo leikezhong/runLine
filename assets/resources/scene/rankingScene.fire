@@ -292,7 +292,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 640,
-      "height": 600
+      "height": 700
     },
     "_rotationX": 0,
     "_rotationY": 0,
@@ -301,7 +301,7 @@
     "_position": {
       "__type__": "cc.Vec2",
       "x": 0,
-      "y": 45
+      "y": 58
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -377,7 +377,7 @@
     "_position": {
       "__type__": "cc.Vec2",
       "x": 0,
-      "y": 408
+      "y": 442
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -530,7 +530,7 @@
     "_N$file": null,
     "_isSystemFontUsed": true,
     "_spacingX": 0,
-    "_N$string": "退出",
+    "_N$string": "重新开始",
     "_N$horizontalAlign": 1,
     "_N$verticalAlign": 1,
     "_N$fontFamily": "Arial",

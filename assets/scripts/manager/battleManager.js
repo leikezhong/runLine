@@ -5,9 +5,18 @@ cc.Class({
     init:function () {
         // console.log("---init battleManager---");
         this.createSunCount = 0;
+        this.createSunInterval = 90;
+
+        this.nowAllScore = 0;//score
+        this.nowEnergy = 100;
     },
 
     initBattle:function(){
+        this.frameSize = cc.view.getFrameSize();
+        this.winSize = cc.director.getWinSize();
+        console.log("winSize: ", this.winSize);
+        console.log("frameSize: ", this.frameSize);
+
         this.mainStar = new starEntity();
         this.mainStar.init(cc.p(0, -300));
 
@@ -24,26 +33,31 @@ cc.Class({
         this.mainCount = 0;
         this.mainMoveInterval = 5;
 
-        this.allMoveType = [0, 0, 0, 1, 2, 3, 3];
+        this.allMoveType = [0, 0, 0, 3, 3];
         this.nowMoveType = this.allMoveType.concat();
 
         this.initEntity();
+        this.energyBar = battle.layerManager.uiLayer.getChildByName("energyBar").getComponent(cc.ProgressBar);
+        if(this.energyBar){
+            this.energyBar.node.y = this.winSize.height * .5 - 50;
+        }
     },
 
     initEntity:function(){
-        for(var i = 0; i < 20; i++){
+        for(var i = 0; i < 10; i++){
             var sun = new sunEntity();
             sun.init(cc.p(-320 + 640 * Math.random(), 640));
             battle.poolManager.putInPool(sun);
 
-            var bomb = new sunBombEntity();
-            bomb.init(sun.initPos, sun.lastColor);
-            battle.poolManager.putInPool(bomb);
+            if(i < 5){
+                var bomb = new sunBombEntity();
+                bomb.init(sun.initPos, sun.lastColor);
+                battle.poolManager.putInPool(bomb);
+            }
         }
     },
 
     getSunMoveType:function(){
-        
         if(this.nowMoveType.length == 0){
             this.nowMoveType = this.allMoveType.concat();
         }
@@ -65,10 +79,10 @@ cc.Class({
             this.mainStar.setEntityX(this.mainStar.getEntityX() + this.intervalX);
         }
 
-        if(this.mainStar.getEntityX() < -360){
-            this.mainStar.setEntityX(-360);
-        }else if(this.mainStar.getEntityX() > 360){
-            this.mainStar.setEntityX(360);
+        if(this.mainStar.getEntityX() < -320){
+            this.mainStar.setEntityX(-320);
+        }else if(this.mainStar.getEntityX() > 320){
+            this.mainStar.setEntityX(320);
         }
         if(this.mainStar.getEntityY() < -640){
             this.mainStar.setEntityY(-640);
@@ -81,30 +95,92 @@ cc.Class({
         
     },
 
+    changeStatus:function(){
+        if(this.mainMoveInterval < 23){
+            this.mainMoveInterval += 0.1;
+        }
+        if(this.createSunInterval > 30){
+            this.createSunInterval--;
+        }
+        this.nowAllScore += 10;
+        if(this.nowEnergy > 0 && this.nowEnergy < 100){
+            this.nowEnergy += 5;
+            if(this.nowEnergy > 100){
+                this.nowEnergy = 100;
+            }
+            this.energyBar.progress = this.nowEnergy / 100;
+        }
+        console.log("mainMoveInterval:" + this.mainMoveInterval);
+        console.log("createSunInterval:" + this.createSunInterval);
+    },
+
+    changeEnergyBar:function(){
+        if(this.nowEnergy > 0){
+            this.nowEnergy -= 10;
+            if(this.nowEnergy < 0){
+                this.nowEnergy = 0;
+            }
+            this.energyBar.progress = this.nowEnergy / 100;
+            if(this.nowEnergy == 0){
+                this.gameOver();
+            }
+        }
+    },
+
+    gameOver:function(){
+        if(!this.isGameOver){
+            this.isGameOver = true;
+            battle.wxManager.nowScore = this.nowAllScore;
+            battle.layerManager.uiLayer.getChildByName("gotoRankingBtn").active = true;
+            // cc.director.loadScene("rankingScene");
+            let score = this.nowAllScore;
+            if (CC_WECHATGAME) {
+                console.log("提交得分: x1 : " + score);
+                window.wx.postMessage({
+                    messageType: 3,
+                    MAIN_MENU_NUM: "x1",
+                    score: score,
+                });
+            } else {
+                console.log("提交得分: x2 : " + score);
+            }
+        }
+    },
+
     step:function(){
+        if(this.isGameOver) return;
         this.mainStep();
         this.createSunStep();
     },
 
     mainStep:function(){
         this.mainCount++;
-        if(this.mainCount % 600 == 0){
-            if(this.mainMoveInterval < 15){
-                this.mainMoveInterval++;
+        if(this.mainCount % 60 == 0){
+            this.nowEnergy--;
+            this.energyBar.progress = this.nowEnergy / 100;
+            if(this.nowEnergy == 0){
+                this.gameOver();
             }
         }
     },
 
     createSunStep:function(){
         this.createSunCount++;
-        if(this.createSunCount % 90 == 0){
+        if(this.createSunCount % this.createSunInterval == 0){
             var sun = battle.poolManager.getFromPool(gameConst.ENTITY_TYPE.SUN);
             if(sun){
-                sun.getFromPool(cc.p(-320 + 640 * Math.random(), 640));
+                sun.getFromPool(cc.p(-this.winSize.width * .4 + this.winSize.width * .8 * Math.random(), this.winSize.height * .5));
             }else{
                 sun = new sunEntity();
-                sun.init(cc.p(-320 + 640 * Math.random(), 640));
+                sun.init(cc.p(-this.winSize.width * .4 + this.winSize.width * .8 * Math.random(), this.winSize.height * .5));
             }
         }
+    },
+
+    clear:function(){
+        this.createSunCount = 0;
+        this.createSunInterval = 90;
+        this.nowAllScore = 0;
+        this.nowEnergy = 100;
     }
 })

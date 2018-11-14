@@ -39,6 +39,13 @@ cc.Class({
         this.moveType = battle.battleManager.getSunMoveType();
         this.moveCount = 0;
         this.nowMoveInterval = battle.battleManager.mainMoveInterval;
+        if(this.moveType == 3){
+            if(this.initPos.x < -battle.battleManager.winSize.width * .5 + 150){
+                this.initPos.x = -battle.battleManager.winSize.width * .5 + 150;
+            }else if(this.initPos.x > battle.battleManager.winSize.width * .5 - 150){
+                this.initPos.x = battle.battleManager.winSize.width * .5 - 150;
+            }
+        }
         if(this.sunParticle && this.particleSystem){
             this.sunParticle.x = this.initPos.x;
             this.sunParticle.y = this.initPos.y;
@@ -108,17 +115,19 @@ cc.Class({
                 case 3:
                 this.itemCount++;
                 var hudu = (Math.PI / 180) * this.itemCount * 3;
-                this.sunParticle.x = this.initPos.x + Math.sin(hudu) * 200;
+                this.sunParticle.x = this.initPos.x + Math.sin(hudu) * 150;
                 this.sunParticle.y = this.initPos.y - this.nowMoveInterval * this.moveCount * .8;
                 break;
             }
-            if(this.sunParticle.y < -1280){
+            if(this.sunParticle.y < -battle.battleManager.winSize.height * .6){
                 battle.poolManager.putInPool(this);
+                battle.battleManager.changeEnergyBar();
             }
         }
     },
 
     clear:function(){
+        this.particleSystem = null;
         if(this.sunParticle){
             this.sunParticle.destroy();
             this.sunParticle = null;

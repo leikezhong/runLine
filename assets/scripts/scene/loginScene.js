@@ -16,13 +16,6 @@ cc.Class({
 
     initManager:function(){
         this.allManager = [
-            "battleManager",
-            "collisionManager",
-            "enterFrameManager",
-            "entityManager",
-            "layerManager",
-            "poolManager",
-            "resourceManager",
             "wxManager"
         ];
 

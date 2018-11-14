@@ -56,27 +56,27 @@ cc.Class({
 
     addParameter:function(other){
         console.log("add parameter")
-        this.startEmissionRate++;
-        this.startParticleCount += 2;
-        this.startGravity.y -= 10;
 
-        if(this.startColor.getR() > 0){
+        if(this.startColor.getR() > 5){
             this.startColor.setR(this.startColor.getR() - 5);
             this.startColor.setG(this.startColor.getG() - 5);
             this.startColor.setB(this.startColor.getB() - 5);
         }
-        if(this.startColorVar.getR() < 255){
+        if(this.startColorVar.getR() < 245){
             this.startColorVar.setR(this.startColorVar.getR() + 5);
             this.startColorVar.setG(this.startColorVar.getG() + 5);
             this.startColorVar.setB(this.startColorVar.getB() + 5);
         }
-        if(this.endColorVar.getR() < 255){
+        if(this.endColorVar.getR() < 245){
             this.endColorVar.setR(this.endColorVar.getR() + 5);
             this.endColorVar.setG(this.endColorVar.getG() + 5);
             this.endColorVar.setB(this.endColorVar.getB() + 5);
         }
         if(this.startSize < 70){
             this.startSize += 0.5;
+            this.startEmissionRate++;
+            this.startParticleCount += 2;
+            this.startGravity.y -= 10;
         }
         
         this.particleSystem.startSize = this.startSize;
@@ -86,6 +86,8 @@ cc.Class({
         this.particleSystem.emissionRate = this.startEmissionRate;
         this.particleSystem.particleCount = this.startParticleCount;
         this.particleSystem.gravity = this.startGravity;
+
+        battle.battleManager.changeStatus();
     },
 
     step:function(){
@@ -97,6 +99,7 @@ cc.Class({
     },
 
     clear:function(){
+        this.particleSystem = null;
         if(this.starParticle){
             this.starParticle.destroy();
             this.starParticle = null;

@@ -79,8 +79,21 @@ cc.Class({
 
     clear:function(){
         this.nowUseEntity = null;
+        let i;
+        for(i = 0; i < this.preEntities.length; i++){
+            this.preEntities[i].clear();
+            this.preEntities[i] = null;
+        }
         this.preEntities = null;
+        for(i = 0; i < this.removeEntities.length; i++){
+            this.removeEntities[i].clear();
+            this.removeEntities[i] = null;
+        }
         this.removeEntities = null;
+        for(i = 0; i < this.entities.length; i++){
+            this.entities[i].clear();
+            this.entities[i] = null;
+        }
         this.entities = null;
     }
 });

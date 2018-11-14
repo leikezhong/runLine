@@ -70,7 +70,7 @@ cc.Class({
     },
 
     submitScoreButtonFunc(){
-        let score = 123;
+        let score = battle.wxManager.nowScore;
         if (CC_WECHATGAME) {
             console.log("提交得分: x1 : " + score);
             window.wx.postMessage({

@@ -87,7 +87,7 @@
     "_dstBlendFactor": 1,
     "playOnLoad": true,
     "_autoRemoveOnFinish": false,
-    "_totalParticles": 400,
+    "_totalParticles": 200,
     "_duration": -1,
     "_emissionRate": 200,
     "_life": 1.1,

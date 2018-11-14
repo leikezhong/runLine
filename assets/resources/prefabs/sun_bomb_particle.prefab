@@ -21,10 +21,13 @@
     "_components": [
       {
         "__id__": 2
+      },
+      {
+        "__id__": 3
       }
     ],
     "_prefab": {
-      "__id__": 3
+      "__id__": 4
     },
     "_id": "",
     "_opacity": 255,
@@ -81,11 +84,11 @@
     "_dstBlendFactor": 1,
     "playOnLoad": true,
     "_autoRemoveOnFinish": false,
-    "_totalParticles": 2800,
+    "_totalParticles": 700,
     "_duration": 0.1,
-    "_emissionRate": 4000.0000000000005,
-    "_life": 0.7,
-    "_lifeVar": 0.2,
+    "_emissionRate": 1400,
+    "_life": 0.4,
+    "_lifeVar": 0.1,
     "_startColor": {
       "__type__": "cc.Color",
       "r": 255,
@@ -141,8 +144,8 @@
       "x": 0,
       "y": 0
     },
-    "_speed": 300,
-    "_speedVar": 300,
+    "_speed": 200,
+    "_speedVar": 200,
     "_tangentialAccel": 0,
     "_tangentialAccelVar": 0,
     "_radialAccel": 0,
@@ -155,6 +158,15 @@
     "_rotatePerS": 0,
     "_rotatePerSVar": 0,
     "_N$preview": true
+  },
+  {
+    "__type__": "d43a3UOpltH47gxoR8mgezX",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true
   },
   {
     "__type__": "cc.PrefabInfo",
