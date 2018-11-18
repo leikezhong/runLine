@@ -52,7 +52,7 @@ cc.Class({
         if(this.wxHead){
             this.wxHead.node.y = this.winSize.height * .5 - 50;
             var self = this;
-            if(battle.wxManager.userInfo){
+            if(battle.wxManager.userInfo && battle.wxManager.userInfo.avatarUrl != ""){
                 cc.loader.load({url: battle.wxManager.userInfo.avatarUrl, type: 'jpg'},
                     function (err, texture) {
                         self.wxHead.spriteFrame = new cc.SpriteFrame(texture);
