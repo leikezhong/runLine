@@ -18,7 +18,7 @@ cc.Class({
         console.log("frameSize: ", this.frameSize);
 
         this.mainStar = new starEntity();
-        this.mainStar.init(cc.p(0, -300));
+        this.mainStar.init(cc.p(0, -230));
 
         battle.layerManager.mainLayer.on(cc.Node.EventType.TOUCH_START, this.btnPress, this);
         battle.layerManager.mainLayer.on(cc.Node.EventType.TOUCH_MOVE, this.btnMove, this);
@@ -39,8 +39,39 @@ cc.Class({
         this.initEntity();
         this.energyBar = battle.layerManager.uiLayer.getChildByName("energyBar").getComponent(cc.ProgressBar);
         if(this.energyBar){
-            this.energyBar.node.y = this.winSize.height * .5 - 50;
+            this.energyBar.node.y = this.winSize.height * .5 - 110;
         }
+
+        this.scoreNow = battle.layerManager.uiLayer.getChildByName("scoreNow").getComponent(cc.Label);
+        if(this.scoreNow){
+            this.scoreNow.node.y = this.winSize.height * .5 - 150;
+            this.scoreNow.string = "Score:" + this.nowAllScore;
+        }
+
+        this.wxHead = battle.layerManager.uiLayer.getChildByName("wxHead").getComponent(cc.Sprite);
+        if(this.wxHead){
+            this.wxHead.node.y = this.winSize.height * .5 - 50;
+            var self = this;
+            if(battle.wxManager.userInfo){
+                cc.loader.load({url: battle.wxManager.userInfo.avatarUrl, type: 'jpg'},
+                    function (err, texture) {
+                        self.wxHead.spriteFrame = new cc.SpriteFrame(texture);
+                        self.wxHead.node.width = 60;
+                        self.wxHead.node.height = 60;
+                    }
+                );
+            }
+        }
+
+        this.wxName = battle.layerManager.uiLayer.getChildByName("wxName").getComponent(cc.Label);
+        if(this.wxName){
+            this.wxName.node.y = this.winSize.height * .5 - 50;
+            if(battle.wxManager.userInfo){
+                this.wxName.string = battle.wxManager.userInfo.nickName;
+            }
+        }
+
+        
     },
 
     initEntity:function(){
@@ -78,7 +109,7 @@ cc.Class({
 
     btnMove:function(event){
         if(event.getLocation()){
-            this.intervalX = event.getLocation().x - this.startX;
+            this.intervalX = (event.getLocation().x - this.startX) * 1.2;
             this.startX = event.getLocation().x;
             this.mainStar.setEntityX(this.mainStar.getEntityX() + this.intervalX);
         }
@@ -100,6 +131,7 @@ cc.Class({
     },
 
     changeStatus:function(){
+        if(this.isGameOver) return;
         if(this.mainMoveInterval < 23){
             this.mainMoveInterval += 0.1;
         }
@@ -107,6 +139,7 @@ cc.Class({
             this.createSunInterval--;
         }
         this.nowAllScore += 10;
+        this.scoreNow.string = "Score:" + this.nowAllScore;
         if(this.nowEnergy > 0 && this.nowEnergy < 100){
             this.nowEnergy += 5;
             if(this.nowEnergy > 100){
@@ -136,6 +169,9 @@ cc.Class({
             this.isGameOver = true;
             battle.wxManager.nowScore = this.nowAllScore;
             battle.layerManager.uiLayer.getChildByName("gotoRankingBtn").active = true;
+            battle.layerManager.uiLayer.getChildByName("scoreTitle").active = true;
+            battle.layerManager.uiLayer.getChildByName("scoreLabel").active = true;
+            battle.layerManager.uiLayer.getChildByName("scoreLabel").getComponent(cc.Label).string = this.nowAllScore;
             // cc.director.loadScene("rankingScene");
             let score = this.nowAllScore;
             if (CC_WECHATGAME) {
