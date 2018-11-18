@@ -12,6 +12,7 @@ cc.Class({
         console.log("onLoad!");
         this.initManager();
         this.wxInfo();
+        cc.director.setClearColor(new cc.color(24,0,36));
     },
 
     initManager:function(){
@@ -24,6 +25,7 @@ cc.Class({
             battle[this.allManager[i]] = new manager();
             battle[this.allManager[i]].init();
         }
+        
     },
 
     wxInfo:function(){
