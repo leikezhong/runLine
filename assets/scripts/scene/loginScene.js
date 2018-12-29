@@ -79,7 +79,7 @@ cc.Class({
                         if (res.userInfo) {
                             button.hide();
                             battle.wxManager.userInfo = res.userInfo;
-                            cc.director.loadScene("battleScene");
+                            cc.director.loadScene("mainScene");
                             console.log("wxLogin auth success");
                             // wx.showToast({title:"授权成功"});
                         }else {
@@ -97,8 +97,8 @@ cc.Class({
     },
 
     start () {
-        cc.director.preloadScene("battleScene", function () {
-            cc.log("rankingScene preloaded");
+        cc.director.preloadScene("mainScene", function () {
+            cc.log("mainScene preloaded");
         });
     },
 
